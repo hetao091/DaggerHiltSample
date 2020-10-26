@@ -28,14 +28,14 @@ class JokesRepository @Inject constructor(private val apiHelper: ApiHelper) {
         //
         apiHelper.getJokes()
             .catch { e ->
-                emit(UIState.error(e.toString()))
+                emit(UIState.error<Result<Joke>>(e.toString()))
             }.onCompletion {
                 //
             }.collect {
                 if (it.code == 1) {
                     emit(UIState.success(it))
                 } else {
-                    emit(UIState.failure(it.msg))
+                    emit(UIState.failure<Result<Joke>>(it.msg))
                 }
             }
     }
