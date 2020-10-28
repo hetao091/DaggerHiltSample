@@ -48,7 +48,6 @@ class JokesViewModel @ViewModelInject constructor(
         get() = _network
 
     init {
-        fetchNetWorkState()
         fetchJokes()
     }
 
@@ -61,6 +60,7 @@ class JokesViewModel @ViewModelInject constructor(
     }
 
     fun fetchJokes() {
+        fetchNetWorkState()
         viewModelScope.launch {
             jokesRepository.getUsers().collect {
                 _jokes.postValue(it)
