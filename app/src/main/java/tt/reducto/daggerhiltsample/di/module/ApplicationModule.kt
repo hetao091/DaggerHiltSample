@@ -13,6 +13,7 @@ import tt.reducto.daggerhiltsample.BuildConfig
 import tt.reducto.daggerhiltsample.data.api.ApiHelper
 import tt.reducto.daggerhiltsample.data.api.ApiHelperImpl
 import tt.reducto.daggerhiltsample.data.api.ApiService
+import tt.reducto.log.TTLog
 import javax.inject.Singleton
 
 @Module
@@ -22,10 +23,24 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
-        val loggingInterceptor = HttpLoggingInterceptor()
+        val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            private val mMessage = StringBuilder()
+            override fun log(message: String) {
+                // 请求或者响应开始
+                if (message.startsWith("--> ")) {
+                    mMessage.setLength(0)
+                }
+                mMessage.append(message+"\n")
+                // 响应结束，打印整条日志
+                if (message.startsWith("<-- END HTTP")) {
+                    TTLog.d(mMessage.toString())
+                }
+            }
+
+        })
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+            .addNetworkInterceptor(loggingInterceptor)
             .build()
     } else OkHttpClient
         .Builder()

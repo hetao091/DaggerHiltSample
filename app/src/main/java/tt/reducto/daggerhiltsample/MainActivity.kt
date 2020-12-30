@@ -2,7 +2,6 @@ package tt.reducto.daggerhiltsample
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -52,7 +51,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    /**
+     *  适配器。
+     */
     private fun initAdapter() {
 
         mAdapter = listAdapterOf(
@@ -61,10 +62,11 @@ class MainActivity : AppCompatActivity() {
             viewHolderCreator = { viewGroup, _ ->
                 viewGroup.getViewHolder(ItemLayoutBinding::inflate).apply {
                     itemView.setOnClickListener {
-                        Log.d("initAdapter", mAdapter.currentList[adapterPosition].content)
                         val intent = Intent(this@MainActivity, ContainerActivity::class.java)
-                        intent.putExtra(Constant.MAIN_INTENT_TO_CONTAINER_CONTENT_KET,
-                            mAdapter.currentList[adapterPosition].content)
+                        intent.putExtra(
+                            Constant.MAIN_INTENT_TO_CONTAINER_CONTENT_KET,
+                            mAdapter.currentList[adapterPosition].content
+                        )
                         startActivity(intent)
                     }
                 }
@@ -91,26 +93,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun initData() {
 
-        mJokesViewModel.jokes.observe(this, Observer {
+        mJokesViewModel.jokes.observe(this, Observer{
             when (it) {
+
                 is UIState.Error -> {
                     toast(it.msg)
                     // 显示
                     showLoading(false)
                 }
+
                 is UIState.Success -> {
                     it.data.let { joke ->
                         mAdapter.submitList(joke.data.list)
                     }
                     showLoading(false)
                 }
+
                 is UIState.Loading -> {
                     //  加载
                     showLoading(true)
                 }
+
                 is UIState.Failure -> {
                     toast(it.msg)
                     showLoading(false)
+                }
+
+                is UIState.DismissLoading -> {
+
                 }
             }
         })
@@ -131,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNetWorkState() {
-        mJokesViewModel.networkState.observe(this, Observer {
+        mJokesViewModel.networkState.observe(this, Observer{
             when (it) {
                 false -> {
                     mBinding.textViewNetworkStatus.text = "无网络"
