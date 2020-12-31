@@ -30,11 +30,11 @@ import javax.xml.transform.stream.StreamSource
  */
 internal class TTLogOperator : Operator {
 
-    /* */
+    /* 缩进距离 */
     private val JSON_INDENT = 2
 
     /**
-     * 为日志消息提供一次性使用的标记.
+     * 根据 线程信息 保存 TAG 。
      */
     private val localTag = ThreadLocal<String>()
 
@@ -126,7 +126,7 @@ internal class TTLogOperator : Operator {
             transformer.transform(xmlInput, xmlOutput)
             d(xmlOutput.writer.toString().replaceFirst(">", ">\n"))
         } catch (e: TransformerException) {
-            e("Invalid xml")
+            e(" xml 解析错误 ")
         }
     }
 

@@ -71,31 +71,31 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
     }
 
 
-    override fun log(priority: Int, onceOnlyTag: String?, message: String?) {
-        val tag = formatTag(onceOnlyTag)
-        logTopBorder(priority, tag)
-        logHeaderContent(priority, tag, methodCount)
+    override fun log(priority: Int, tag: String?, message: String?) {
+        val mTag = formatTag(tag)
+        logTopBorder(priority, mTag)
+        logHeaderContent(priority, mTag, methodCount)
         message?.let {
             val bytes = it.toByteArray()
             val length = bytes.size
             if (length <= CHUNK_SIZE) {
                 if (methodCount > 0) {
-                    logDivider(priority, tag)
+                    logDivider(priority, mTag)
                 }
-                logContent(priority, tag, it)
-                logBottomBorder(priority, tag)
+                logContent(priority, mTag, it)
+                logBottomBorder(priority, mTag)
                 return
             }
             if (methodCount > 0) {
-                logDivider(priority, tag)
+                logDivider(priority, mTag)
             }
             var i = 0
             while (i < length) {
                 val count = (length - i).coerceAtMost(CHUNK_SIZE)
-                logContent(priority, tag, String(bytes, i, count))
+                logContent(priority, mTag, String(bytes, i, count))
                 i += CHUNK_SIZE
             }
-            logBottomBorder(priority, tag)
+            logBottomBorder(priority, mTag)
         }
 
     }
@@ -111,7 +111,7 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
      * 打印头部线程 信息
      */
     private fun logHeaderContent(logType: Int, tag: String?, methodCount: Int) {
-        var methodCount = methodCount
+        var mMethodCount = methodCount
         val trace = Thread.currentThread().stackTrace
         if (showThreadInfo) {
             logChunk(
@@ -124,10 +124,10 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
         var level = ""
         val stackOffset = getStackOffset(trace) + methodOffset
 
-        if (methodCount + stackOffset > trace.size) {
-            methodCount = trace.size - stackOffset - 1
+        if (mMethodCount + stackOffset > trace.size) {
+            mMethodCount = trace.size - stackOffset - 1
         }
-        for (i in methodCount downTo 1) {
+        for (i in mMethodCount downTo 1) {
             val stackIndex = i + stackOffset
             if (stackIndex >= trace.size) {
                 continue
@@ -175,7 +175,7 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
         logStrategy?.log(priority, tag, chunk)
     }
 
-    private fun getSimpleClassName(name: String): String? {
+    private fun getSimpleClassName(name: String): String {
         val lastIndex = name.lastIndexOf(".")
         return name.substring(lastIndex + 1)
     }
@@ -198,13 +198,12 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
 
 
     private fun formatTag(tag: String?): String? {
-        return if (!tag.isNullOrEmpty() && (this.tag == tag)) {
+        return if (!tag.isNullOrEmpty() && (this.tag === tag)) {
             this.tag + "-" + tag
         } else this.tag
     }
 
     class Builder {
-
         var methodCount = 2
         var methodOffset = 0
         var showThreadInfo = true
@@ -254,6 +253,10 @@ interface LogStrategy {
     fun log(priority: Int, tag: String?, message: String?)
 }
 
+
+/**
+ * 替代策略配置。
+ */
 internal class LogcatLogStrategy : LogStrategy {
 
     override fun log(priority: Int, tag: String?, message: String?) {

@@ -21,6 +21,7 @@ package tt.reducto.log
  */
 class TTLog private constructor() {
 
+
     companion object {
 
         /* 日志分级 */
@@ -33,8 +34,10 @@ class TTLog private constructor() {
 
         /* 初始化属性 */
         private var printer: Operator = TTLogOperator()
+        private var mDefaultAdapter = AndroidLogAdapter()
+
         init {
-            printer.addAdapter(AndroidLogAdapter())
+            printer.addAdapter(mDefaultAdapter)
         }
 
         /**
@@ -55,7 +58,7 @@ class TTLog private constructor() {
             adapter?.let {
                 printer.addAdapter(it)
             } ?: kotlin.run {
-                printer.addAdapter(AndroidLogAdapter())
+                printer.addAdapter(mDefaultAdapter)
             }
         }
 

@@ -26,7 +26,7 @@ interface LogAdapter {
 
 
     /**
-     *
+     * 暴露给 策略器打印方法。
      *
      * @param priority
      * @param tag
@@ -35,7 +35,7 @@ interface LogAdapter {
     fun log(priority: Int, tag: String?, message: String)
 }
 
-internal class AndroidLogAdapter : LogAdapter {
+class AndroidLogAdapter : LogAdapter {
     private val formatStrategy: FormatStrategy
 
     constructor() {
