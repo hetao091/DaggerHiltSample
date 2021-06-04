@@ -45,13 +45,13 @@ class TTFormatStrategy private constructor(builder: Builder) : FormatStrategy {
     private val MIDDLE_BORDER = MIDDLE_CORNER.toString() + SINGLE_DIVIDER + SINGLE_DIVIDER
 
     // 对外提供方法
-    /* 方法数 */
+    /* 控制打印多少个调用栈中的方法。默认 2 */
     private var methodCount = 0
-    /* */
+    /* 控制偏移（隐藏）多少个方法后再开始打印方法。默认 5 */
     private var methodOffset = 0
     /*是否打印线程信息*/
     private var showThreadInfo = false
-    /* 策略配置 */
+    /* 修改日志打印策略  */
     private var logStrategy: LogStrategy? = null
     /* TAG */
     private var tag: String? = null

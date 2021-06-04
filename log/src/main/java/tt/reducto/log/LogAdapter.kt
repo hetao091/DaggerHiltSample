@@ -2,7 +2,7 @@ package tt.reducto.log
 
 
 /**
- * ……。
+ * 打印适配器 配置。
  *
  * <p>......。</p>
  * <ul><li></li></ul>

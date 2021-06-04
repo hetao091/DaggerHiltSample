@@ -4,7 +4,8 @@ package tt.reducto.daggerhiltsample.di.module
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
+
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,30 +18,23 @@ import tt.reducto.log.TTHttpLog
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object ApplicationModule {
     
     @Provides
     @Singleton
     fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
-        val loggingInterceptor = HttpLoggingInterceptor(
-            object : HttpLoggingInterceptor.Logger {
-            private val mMessage = StringBuilder()
-            override fun log(message: String) {
-//                // 请求或者响应开始
-//                if (message.startsWith("--> ")) {
-//                    mMessage.setLength(0)
-//                }
-//                mMessage.append(message+"\n")
-//                // 响应结束，打印整条日志
-//                if (message.startsWith("<-- END HTTP")) {
-//                    TTLog.d(mMessage.toString())
-//                }
-                TTHttpLog.okHttp(mMessage,message)
-            }
-
+        val loggingInterceptor = HttpLoggingInterceptor { message -> //                // 请求或者响应开始
+            //                if (message.startsWith("--> ")) {
+            //                    mMessage.setLength(0)
+            //                }
+            //                mMessage.append(message+"\n")
+            //                // 响应结束，打印整条日志
+            //                if (message.startsWith("<-- END HTTP")) {
+            //                    TTLog.d(mMessage.toString())
+            //                }
+            TTHttpLog.okHttp(message)
         }
-        )
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         OkHttpClient.Builder()
             .addNetworkInterceptor(loggingInterceptor)

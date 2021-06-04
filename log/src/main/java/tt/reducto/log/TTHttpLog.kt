@@ -20,9 +20,11 @@ package tt.reducto.log
 class TTHttpLog private constructor() {
 
     companion object {
+        private val mOkHttpBuilder = StringBuilder()
         private var printer: Operator = TTLogOperator()
 
         init {
+            /* 配置 */
             val s = TTFormatStrategy.newBuilder()
             s.tag = "okHttp"
             s.showThreadInfo = false
@@ -38,16 +40,24 @@ class TTHttpLog private constructor() {
          * okHttp 打印.
          */
         @JvmStatic
-        fun okHttp(mOkHttpBuilder: StringBuilder, message: String) {
+        fun okHttp(message: String) {
             // 请求或者响应开始
-            if (message.startsWith("--> ")) {
+            if (message.startsWith("--> POST")|| message.startsWith("--> GET")
+                || message.startsWith("--> PUT") || message.startsWith("--> DELETE")) {
                 mOkHttpBuilder.setLength(0)
             }
             mOkHttpBuilder.append(message).append("\n")
             // 响应结束，打印整条日志
-
+            if ((message.startsWith("{") && message.endsWith("}"))
+                || (message.startsWith("[") && message.endsWith("]"))
+            ) {
+                /* 格式化 json */
+                mOkHttpBuilder.append(JsonTools.formatJson(JsonTools.decodeUnicode(message)))
+                mOkHttpBuilder.append("\n")
+            }
             if (message.startsWith("<-- END HTTP")) {
                 d(mOkHttpBuilder.toString())
+                mOkHttpBuilder.setLength(0)
             }
         }
     }

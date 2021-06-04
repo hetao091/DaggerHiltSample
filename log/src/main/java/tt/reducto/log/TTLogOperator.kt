@@ -17,7 +17,7 @@ import javax.xml.transform.stream.StreamSource
 
 
 /**
- * ……。
+ * 默认打印格式配置 。
  *
  * <p>......。</p>
  * <ul><li></li></ul>
@@ -182,7 +182,15 @@ internal class TTLogOperator : Operator {
      */
     private fun createMessage(msg: String?, vararg args: Any?): String {
         return msg?.run {
-            if (args.isNullOrEmpty()) this else String.format(this, *args)
+            if (args.isNullOrEmpty()) {
+                this
+            } else {
+                try {
+                    String.format(this, *args)
+                } catch (e: Exception) {
+                    this
+                }
+            }
         } ?: kotlin.run {
             "-----请添加打印信息-----"
         }

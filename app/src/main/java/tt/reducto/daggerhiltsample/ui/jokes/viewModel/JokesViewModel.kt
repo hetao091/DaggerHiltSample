@@ -1,8 +1,7 @@
 package tt.reducto.daggerhiltsample.ui.jokes.viewModel
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import tt.reducto.daggerhiltsample.data.model.Joke
@@ -10,6 +9,7 @@ import tt.reducto.daggerhiltsample.data.model.Result
 import tt.reducto.daggerhiltsample.data.repository.JokesRepository
 import tt.reducto.daggerhiltsample.utils.NetWorkUtils
 import tt.reducto.daggerhiltsample.utils.UIState
+import javax.inject.Inject
 
 /**
  * ……。
@@ -23,11 +23,11 @@ import tt.reducto.daggerhiltsample.utils.UIState
  * @version  : 1.0.0
  * @author   : hetao
  */
-
-class JokesViewModel @ViewModelInject constructor(
+@HiltViewModel
+class JokesViewModel @Inject constructor(
     private val jokesRepository: JokesRepository,
     private val netWorkUtils: NetWorkUtils,
-    @Assisted private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {

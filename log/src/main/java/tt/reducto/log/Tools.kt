@@ -23,7 +23,7 @@ import java.util.*
  * @version  : 1.0.0
  * @author   : hetao
  */
-object Tools {
+internal object Tools {
 
     fun getStackTraceString(tr: Throwable?): String {
         if (tr == null) {

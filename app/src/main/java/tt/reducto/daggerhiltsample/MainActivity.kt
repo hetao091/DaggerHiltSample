@@ -23,6 +23,7 @@ import tt.reducto.daggerhiltsample.ui.jokes.viewModel.JokesViewModel
 import tt.reducto.daggerhiltsample.utils.Constant
 import tt.reducto.daggerhiltsample.utils.UIState
 import tt.reducto.daggerhiltsample.utils.viewBinding
+import tt.reducto.log.TTLog
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        TTLog.d("onCreate")
         initNetWorkState()
         initAdapter()
         initData()
